@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+<title>Page Title</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css" />
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+	
+	let jsonData = [
+        {
+          id:'1',
+          user: 'Park',
+          text: '저 또한 아이폰 블라블라',
+          regDate: '2021.05.25'
+
+        },
+        {
+          id:'2',
+          user: 'Lee',
+          text: '저 또한 아이폰 블라블라22222',
+          regDate: '2021.05.25'
+
+        },
+    ];
+	
+	var bannedWord = "바보";
+	function formCheck(form) {
+		
+		if (form.comment.value == "") {
+			alert("댓글 내용을 입력해 주세요.");
+			form.comment.focus();
+			return;
+		}
+		if (form.comment.value.indexOf(bannedWord) != -1) {
+			alert("'" + bannedWord + "'" + "는 금지어입니다.\n다시 작성해 주세요");
+			form.reset();
+			form.comment.focus();
+			return;
+		} else {
+			var parents = document.createElement("DIV");
+			var childDiv = document.createElement("DIV");
+			var deleteBtn = document.createElement("BUTTON");
+			var modifyBtn = document.createElement("BUTTON");
+			var comment = document.createTextNode(form.comment.value);
+			var btnName1 = document.createTextNode("삭제");
+			var btnName2 = document.createTextNode("수정");
+			
+			
+			modifyBtn.onclick = function edit() {
+			    //this.parentElement.removeChild(this);
+			    console.log("수정");
+			    var a = prompt("수정할 내용을 입력해 주세요.");
+			    if(a.value == "") {
+			    	alert("수정할 내용은 빈칸일 수 없습니다.");
+			    	return false;
+			    }
+			    else {
+			    	console.log(a);
+				    console.log(this.innerText);
+				    parents.innerText = "";
+				    parents.innerText = a;
+				    parents.appendChild(deleteBtn);
+					parents.appendChild(modifyBtn);
+			    }
+			    
+			};
+			deleteBtn.onclick = function deleteComm() {
+				this.parentElement.remove();
+				console.log("삭제");
+			}
+			
+			parents.appendChild(comment);
+			parents.appendChild(deleteBtn);
+			parents.appendChild(modifyBtn);
+			deleteBtn.appendChild(btnName1);
+			modifyBtn.appendChild(btnName2);
+			document.getElementById("mainPage").appendChild(parents);
+			alert("댓글이 등록되었습니다.");
+			form.reset();
+			toMain();
+		}
+	}
+	function toMain() {
+		var popup = document.getElementById("popup");
+		var board = document.getElementsByClassName("board");
+		var loginBtns = document.getElementById("loginBtns");
+		var commentBoard = document.getElementById("commentBoard");
+		
+		popup.style.display = "none";
+		board[0].style.display = "none";
+		loginBtns.style.display = "none";
+		commentBoard.style.display = "none";
+	}
+
+	function toComment() {
+		var popup = document.getElementById("popup");
+		var board = document.getElementsByClassName("board");
+		popup.style.display = "";
+		board[0].style.display = "";
+	}
+	
+	function toLogin() {
+		var loginBtns = document.getElementById("loginBtns");
+		console.log(document.getElementById("checkLogin").value);
+		loginBtns.style.display = "";
+		
+			// 로그인 체크 여부 확인
+		if(document.getElementById("checkLogin").value == "noLogin"){
+			console.log("로그인하러 가기");
+			toComment();
+		}
+		else {
+			toWrite();
+			console.log("로그인됨");
+		}
+	}
+	
+	function toWrite() {
+		var commentBoard = document.getElementById("commentBoard");
+		console.log("여기");
+		commentBoard.style.display = "";
+		document.getElementById("checkLogin").value = "login";
+	}
+</script>
+<style>
+html, body {
+	position: relative;
+	height: 100%;
+}
+
+body {
+	background: #eee;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	color: #000;
+	margin: 0;
+	padding: 0;
+}
+
+.swiper-container {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	text-align: center;
+	font-size: 18px;
+	background: #fff;
+}
+
+.swiper-slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.swiper-slide div {
+	border: 1px solid black;
+}
+
+.swiper-slide>div {
+	margin: 15px;
+}
+
+.board>form {
+	margin: 30px;
+}
+
+#popup {
+	width: 100%;
+	height: 100vh;
+	background: black;
+	opacity: 0.3;
+	z-index: 99;
+	position: fixed;
+}
+</style>
+
+</head>
+<body>
+	<div id="popup" style="display: none;"></div>
+	<div class="board"
+		style="position: fixed; width: 100%; bottom: 0px; z-index: 100; display: none; background: white;">
+		<form id="commentForm" onclick="toLogin()">
+			<h4 >나도 한마디!</h4>
+			<input type="text" placeholder="댓글을 입력해 주세요.">
+			<button onclick="">등록</button>
+		</form>
+	</div>
+	<div id="loginBtns" style="position: fixed; width: 100%; bottom: 0px; z-index: 101; display: none; background: white;">
+		<h2 style="text-align : center;">SNS 로그인해서 댓글 쓰기</h2>
+		<ul>
+			<li>
+				<button onclick="toWrite()">네이버로 로그인</button>
+			</li>
+			<li>
+				<button onclick="toWrite()">카카오톡으로 로그인</button>
+			</li>
+			<li>
+				<button onclick="toWrite()">페이스북으로 로그인</button>
+			</li>
+			<li>
+				<button onclick="toWrite()">구글로 로그인</button>
+			</li>
+			<li>
+				<button onclick="toWrite()">트위터로 로그인</button>
+			</li>
+		</ul>
+	</div>
+	<div id="commentBoard" style="position: fixed; width: 100%; height : 200px; bottom: 0px; z-index: 102; display: none; background: white;">
+		<form id="commentForm" >
+			<table>
+				<tr>
+					<td>작성자 ID &nbsp;<input type="text" name="userId" readonly
+						value="id"></td>
+				</tr>
+				<tr>
+					<td>댓글 내용 &nbsp;<textarea cols="40" rows="3" name="comment"></textarea></td>
+				</tr>
+				<tr>
+					<td><button type="button" onclick="formCheck(this.form)">작성</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div class="swiper-container mySwiper" >
+		<div class="swiper-wrapper">
+			<div id="mainPage" class="swiper-slide" style="height: 100%;">
+				<div class="userInfo" style="float: left;">ID님</div>
+				<p style="float: right;">1시간 전</p>
+				<br>
+				<br>
+				<div class="post-wrap" style="height: 35%;">저 또한 아이폰 12 Pro
+					Max를 쓰면서 ...</div>
+				<div class="post-sub" style="margin-bottom: 25px;"
+					onclick="toComment()">작성된 댓글 수 : 8 / 좋아요 / 싫어요</div>
+				<br>
+				<div class="comment-wrap">댓글 8개</div>
+			</div>
+			<div class="swiper-slide">
+				<div class="userInfo" style="float: left;">ID님</div>
+				<p style="float: right;">2시간 전</p>
+				<br>
+				<br>
+				<div class="post-wrap">저 또한 아이폰 X Max를 쓰면서 ...</div>
+				<br>
+				<div class="post-sub">작성된 댓글 수 : 2 / 좋아요 / 싫어요</div>
+				<br>
+				<div class="comment-wrap">댓글 2개</div>
+			</div>
+		</div>
+
+	</div>
+	<input type="hidden" value="noLogin" id="checkLogin">
+	<script>
+		var swiper = new Swiper(".mySwiper", {});
+	</script>
+</body>
+</html>
